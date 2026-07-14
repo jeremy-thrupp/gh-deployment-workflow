@@ -1,11 +1,9 @@
-name: Deploy to GitHub Pages
+name: Deploy static content to Pages
 
 on:
   push:
-    branches: [ "main" ]
-
-  # Allows you to run this workflow manually from the Actions tab
-  workflow_dispatch:
+    branches: ["main"] # Change to "master" if your default branch is master
+  workflow_dispatch: # Allows you to run this workflow manually from the Actions tab
 
 # Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
 permissions:
@@ -13,10 +11,11 @@ permissions:
   pages: write
   id-token: write
 
-# Allow only one concurrent deployment
+# Allow only one concurrent deployment, skipping runs queued between the run in-progress and latest queue.
+# However, do NOT cancel in-progress runs as we want to allow these production deployments to complete.
 concurrency:
   group: "pages"
-  cancel-in-progress: true
+  cancel-in-progress: false
 
 jobs:
   deploy:
@@ -29,14 +28,12 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Setup Pages
-        uses: actions/pages-github-pages-config-action@v5
+        uses: actions/configure-pages@v5
 
-      # Uploads your repository's files (like your index.html) as an artifact
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          # This uploads the entire root directory. 
-          # (Keep your index.html in the main folder of your repo)
+          # Upload the root directory containing your index.html
           path: '.'
 
       - name: Deploy to GitHub Pages
